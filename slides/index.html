@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How We Work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,800;9..144,900&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="deck" id="deck"></div>
+
+<!-- Navigation chrome -->
+<div class="hint" id="hint">← → / SPACE TO NAVIGATE</div>
+
+<div class="chrome">
+  <div class="counter"><span class="current" id="current">01</span> / <span id="total">19</span></div>
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  <div class="nav-controls">
+    <button class="nav-btn" id="prev" aria-label="Previous">←</button>
+    <button class="nav-btn" id="next" aria-label="Next">→</button>
+  </div>
+</div>
+
+<script>
+  const files = Array.from({ length: 20 }, (_, i) =>
+    `slides/slide-${String(i + 1).padStart(2, '0')}.html`
+  );
+
+  Promise.all(files.map(f => fetch(f).then(r => r.text())))
+    .then(parts => {
+      document.getElementById('deck').innerHTML = parts.join('');
+      const s = document.createElement('script');
+      s.src = 'script.js';
+      document.body.appendChild(s);
+    });
+</script>
+</body>
+</html>
