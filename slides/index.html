@@ -3,40 +3,428 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How We Work</title>
+<title>How We Work — Engineering Operating Model</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,800;9..144,900&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+/* ═══ TOKENS ════════════════════════════════════════════════════════════════
+   https://design.w-b.dev · https://github.com/w3b3/design-system-w-b
+   ════════════════════════════════════════════════════════════════════════ */
+:root{
+  --bg:#0e0e0e;
+  --bg2:#141414;
+  --fg:#f3f1ec;
+  --dim:rgba(243,241,236,0.35);
+  --dimmer:rgba(243,241,236,0.15);
+  --hair:rgba(243,241,236,0.08);
+  --accent:#d4a853;
+  --accent-dim:rgba(212,168,83,0.3);
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,monospace;
+  --helv:Helvetica,"Helvetica Neue",Arial,sans-serif;
+}
+
+/* ═══ BASE ═════════════════════════════════════════════════════════════════ */
+html{scroll-behavior:smooth;background:var(--bg);color:var(--fg);font-family:var(--helv)}
+body{background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ═══ SECTIONS ═════════════════════════════════════════════════════════════ */
+.section{
+  min-height:100vh;
+  padding:120px 60px;
+  opacity:0;transform:translateY(30px);
+  transition:opacity 0.7s ease,transform 0.7s ease;
+}
+.section.visible{opacity:1;transform:translateY(0)}
+.section-narrow{max-width:900px;margin:0 auto}
+.section-wide{max-width:1400px;margin:0 auto}
+
+/* ═══ TYPOGRAPHY ═══════════════════════════════════════════════════════════ */
+h1{font-weight:700;font-size:clamp(42px,6vw,72px);letter-spacing:-0.04em;line-height:1.0}
+h2{font-weight:700;font-size:clamp(24px,3.5vw,40px);letter-spacing:-0.03em;line-height:1.1;margin-bottom:32px}
+h3{font-weight:700;font-size:clamp(18px,2.5vw,28px);letter-spacing:-0.02em;line-height:1.2;margin-bottom:16px}
+.label{font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.body{font-family:var(--helv);font-size:clamp(16px,1.6vw,19px);line-height:1.65;color:var(--dim);max-width:680px}
+.body strong{color:var(--fg);font-weight:600}
+.mono{font-family:var(--mono);font-size:13px;letter-spacing:0.02em;color:var(--dim)}
+.divider{width:40px;height:1px;background:var(--dimmer);margin:0 0 32px}
+
+/* ═══ FLOW CHAIN ═══════════════════════════════════════════════════════════ */
+.flow-chain{display:flex;flex-direction:column;gap:0;margin:50px 0}
+.flow-step{display:flex;align-items:flex-start;gap:16px;padding:18px 20px;border-left:2px solid var(--hair);
+  opacity:0;transform:translateX(-20px);transition:all 0.5s ease}
+.visible .flow-step{opacity:1;transform:translateX(0)}
+.flow-step:nth-child(1){transition-delay:0.1s}
+.flow-step:nth-child(2){transition-delay:0.2s}
+.flow-step:nth-child(3){transition-delay:0.3s}
+.flow-step:nth-child(4){transition-delay:0.4s}
+.flow-step .step-icon{width:32px;height:32px;border-radius:50%;background:var(--bg2);border:1px solid var(--dimmer);
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--dim);flex-shrink:0;margin-top:2px}
+.flow-step .step-body{flex:1}
+.flow-step .step-label{font-family:var(--helv);font-weight:700;font-size:14px;margin-bottom:4px}
+.flow-step .step-desc{font-family:var(--mono);font-size:12px;color:var(--dim);line-height:1.55}
+.flow-step.highlight{border-left-color:var(--accent)}
+.flow-step.highlight .step-icon{border-color:var(--accent);color:var(--accent)}
+.flow-step.highlight .step-label{color:var(--accent)}
+
+/* ═══ CARDS ════════════════════════════════════════════════════════════════ */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;margin:50px 0}
+.card{padding:24px;border:1px solid var(--hair);background:var(--bg2);
+  opacity:0;transform:translateY(20px);transition:all 0.6s ease}
+.visible .card{opacity:1;transform:translateY(0)}
+.visible .card:nth-child(1){transition-delay:0.1s}
+.visible .card:nth-child(2){transition-delay:0.2s}
+.visible .card:nth-child(3){transition-delay:0.3s}
+.visible .card:nth-child(4){transition-delay:0.4s}
+.card h4{font-family:var(--helv);font-weight:700;font-size:15px;letter-spacing:-0.01em;margin-bottom:10px}
+.card p{font-family:var(--mono);font-size:12px;color:var(--dim);line-height:1.55}
+.card.accent-card{border-color:var(--accent-dim)}
+.card.accent-card h4{color:var(--accent)}
+
+/* ═══ STACKED LAYERS ═══════════════════════════════════════════════════════ */
+.layers{display:flex;flex-direction:column;gap:0;max-width:700px;margin:50px 0}
+.layer{padding:20px 24px;border:1px solid var(--hair);border-bottom:none;
+  opacity:0;transform:translateY(20px);transition:all 0.5s ease}
+.layer:last-child{border-bottom:1px solid var(--hair)}
+.visible .layer{opacity:1;transform:translateY(0)}
+.visible .layer:nth-child(1){transition-delay:0.15s}
+.visible .layer:nth-child(2){transition-delay:0.30s}
+.visible .layer:nth-child(3){transition-delay:0.45s}
+.layer-name{font-family:var(--helv);font-weight:700;font-size:14px;margin-bottom:4px}
+.layer-desc{font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.55}
+.layer.hot{border-color:var(--accent-dim)}
+.layer.hot .layer-name{color:var(--accent)}
+
+/* ═══ SPLIT PANELS ═════════════════════════════════════════════════════════ */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin:60px 0}
+.split-panel{padding:30px;border:1px solid var(--hair)}
+.split-panel.new{border-color:var(--accent-dim)}
+.split-panel .panel-label{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);margin-bottom:20px}
+.split-panel.new .panel-label{color:var(--accent)}
+.split-panel h3{font-family:var(--helv);font-weight:700;font-size:16px;letter-spacing:-0.01em;margin-bottom:12px}
+.split-panel p{font-family:var(--mono);font-size:12px;color:var(--dim);line-height:1.6}
+
+/* ═══ SOURCE SPLIT (20/80) ═════════════════════════════════════════════════ */
+.source-split{display:grid;grid-template-columns:1fr 4fr;gap:0;max-width:700px;margin:50px 0}
+.source-cell{padding:24px;border:1px solid var(--hair);border-right:none}
+.source-cell:last-child{border-right:1px solid var(--hair)}
+.source-pct{font-family:var(--helv);font-weight:700;font-size:clamp(28px,4vw,48px);letter-spacing:-0.04em;margin-bottom:6px}
+.source-title{font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.source-desc{font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.5}
+
+/* ═══ ARTIFACT TABLE ═══════════════════════════════════════════════════════ */
+.artifact-table{width:100%;border-collapse:collapse;margin:50px 0;font-family:var(--mono);font-size:12px}
+.artifact-table th{text-align:left;padding:12px 16px;border-bottom:1px solid var(--dimmer);
+  color:var(--dimmer);font-weight:400;letter-spacing:0.12em;text-transform:uppercase;font-size:10px}
+.artifact-table td{padding:14px 16px;border-bottom:1px solid var(--hair);color:var(--dim);vertical-align:top;line-height:1.5}
+.artifact-table td:first-child{color:var(--fg);font-weight:500;white-space:nowrap}
+.artifact-table td:last-child{color:var(--dimmer)}
+
+/* ═══ HOURS DISPLAY ════════════════════════════════════════════════════════ */
+.hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair);max-width:560px;margin:32px 0}
+.hours-cell{background:var(--bg);padding:24px}
+.hours-zone{font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--dimmer);margin-bottom:10px}
+.hours-time{font-family:var(--helv);font-weight:700;font-size:clamp(20px,2.5vw,32px);letter-spacing:-0.02em}
+
+/* ═══ RESPONSIVE ═══════════════════════════════════════════════════════════ */
+@media(max-width:768px){
+  .section{padding:80px 24px}
+  .split{grid-template-columns:1fr;gap:30px}
+  .source-split{grid-template-columns:1fr}
+  .source-cell{border-right:1px solid var(--hair);border-bottom:none}
+  .source-cell:last-child{border-bottom:1px solid var(--hair)}
+  .hours-grid{grid-template-columns:1fr}
+  .card-grid{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
 
-<div class="deck" id="deck"></div>
+<!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
+<section class="section" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;opacity:1;transform:none">
+  <div class="label">DOC 001 // Engineering Operating Model</div>
+  <h1 style="margin:16px 0">How <em style="font-style:italic">we</em><br>work.</h1>
+  <p class="mono" style="margin-top:16px;max-width:480px;line-height:1.8">A short guide to how engineering operates on this team.<br>8 principles &nbsp;&middot;&nbsp; high autonomy &nbsp;&middot;&nbsp; high signal &nbsp;&middot;&nbsp; high leverage.</p>
+</section>
 
-<!-- Navigation chrome -->
-<div class="hint" id="hint">← → / SPACE TO NAVIGATE</div>
-
-<div class="chrome">
-  <div class="counter"><span class="current" id="current">01</span> / <span id="total">19</span></div>
-  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-  <div class="nav-controls">
-    <button class="nav-btn" id="prev" aria-label="Previous">←</button>
-    <button class="nav-btn" id="next" aria-label="Next">→</button>
+<!-- ═══ 01 // COMMUNICATION / RHYTHM ════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-narrow">
+    <div class="label">01 // Communication / Rhythm</div>
+    <div class="divider"></div>
+    <h2>We don't run dailies.</h2>
+    <p class="body">Short, unstructured, transparent updates throughout the day — the remote equivalent of <strong>bumping into a colleague in the hallway</strong>. Asynchronous when possible, synchronous when it actually helps.</p>
+    <p class="body" style="margin-top:24px">Driven by what <strong>you</strong> need to make progress, not by a calendar invite. The scrum daily is theater when the team communicates continuously.</p>
   </div>
-</div>
+</section>
+
+<!-- ═══ 02 // FEEDBACK / CADENCE ════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-narrow">
+    <div class="label">02 // Feedback / Cadence</div>
+    <div class="divider"></div>
+    <h2>We don't wait for retros to give feedback.</h2>
+    <p class="body">Asking peers for feedback every week — <strong>small or large, process or behavior, communication or pace</strong>. Retros are a backstop, not the cadence.</p>
+
+    <div class="layers">
+      <div class="layer hot">
+        <div class="layer-name">Asking for feedback is not weakness</div>
+        <div class="layer-desc">It's a signal that you take the peer relationship seriously — and that you believe your colleagues' observations are worth your time. The team that receives feedback weekly adapts weekly. The team that waits for retros adapts quarterly.</div>
+      </div>
+      <div class="layer">
+        <div class="layer-name">No minimum size</div>
+        <div class="layer-desc">A two-sentence observation about how someone communicated in a meeting is worth surfacing. Withholding small feedback because it doesn't feel significant enough is how small things compound into large ones.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 03 // TOOLING / AI ════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-wide">
+    <div class="label">03 // Tooling / AI</div>
+    <div class="divider"></div>
+    <h2>We don't treat AI tools as optional.</h2>
+    <p class="body">Using them daily and intensely. <strong>This is non-negotiable.</strong> AI tools don't replace engineering judgment — they raise the price of not having any.</p>
+
+    <div class="flow-chain" style="max-width:800px">
+      <div class="flow-step highlight">
+        <div class="step-icon">01</div>
+        <div class="step-body">
+          <div class="step-label">Build skills — repeatable, codified workflows for the actions you do constantly</div>
+          <div class="step-desc">Ticket creation, commits, PRs, smoke checks, incident reports, RCAs. When an agent can produce working code in any language or stack, the differentiator is whether you can compound that into repeatable leverage.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-icon">02</div>
+        <div class="step-body">
+          <div class="step-label">Apply critical thinking — don't merge the first thing that compiles</div>
+          <div class="step-desc">The output is a starting point, not the answer. Technically correct and solving the right problem are not the same question. Your job is to know the difference.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-icon">03</div>
+        <div class="step-body">
+          <div class="step-label">Steer — toward architecture that won't collapse in two months</div>
+          <div class="step-desc">Agents optimize for the immediate prompt. You optimize for the system over time. Architectural taste is not something the agent holds. You hold it.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-icon">04</div>
+        <div class="step-body">
+          <div class="step-label">Recognize — when the solution is correct but solves the wrong problem</div>
+          <div class="step-desc">Languages and stacks now have low barriers. Architectural taste, product instinct, and the discipline to interrogate what an agent gives you — those are the high-value assets. That's where your time should go.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="split">
+      <div class="split-panel new">
+        <div class="panel-label">+ Curiosity</div>
+        <h3>You actually use the product</h3>
+        <p>You care and say something when it's awkward. You ask why a user would do the thing the ticket describes. You don't wait for QA, PM, or anyone to tell you what's broken. You notice.</p>
+      </div>
+      <div class="split-panel new">
+        <div class="panel-label">+ Ownership</div>
+        <h3>A module has someone</h3>
+        <p>Someone whose name comes up when it's discussed — who knows its history, its sharp edges, and where it's going. Not because they were assigned it. Because they took it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 04 // PRAGMATISM ══════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-narrow">
+    <div class="label">04 // Pragmatism / Tooling Discipline</div>
+    <div class="divider"></div>
+    <h2>We refine because we must — not because we want to.</h2>
+    <p class="body">Under-utilizing something is not ideal. We build the roads we <strong>need</strong> to use, if we can maintain them. We buy or pay someone to do it if it makes more sense.</p>
+    <p class="body" style="margin-top:24px">The business will drive most decisions. Your voice will steer a few. <strong>Be vocal.</strong></p>
+  </div>
+</section>
+
+<!-- ═══ 05 // OWNERSHIP ═══════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-narrow">
+    <div class="label">05 // Ownership / Direction-Setting</div>
+    <div class="divider"></div>
+    <h2>We don't have PMs.</h2>
+    <p class="body">We don't outsource direction-setting to a product manager who tells engineers what to build. We have <strong>engineers who own the product</strong>.</p>
+
+    <div class="source-split">
+      <div class="source-cell">
+        <div class="source-pct" style="color:var(--dim)">20%</div>
+        <div class="source-title">Leadership</div>
+        <div class="source-desc">Touch points. Strategic hints and direction.</div>
+      </div>
+      <div class="source-cell">
+        <div class="source-pct" style="color:var(--accent)">80%</div>
+        <div class="source-title">Engineers</div>
+        <div class="source-desc">Driving value through real ownership of their product or module. The deciding voice on what to build next is, most of the time, yours.</div>
+      </div>
+    </div>
+
+    <div class="layers">
+      <div class="layer hot">
+        <div class="layer-name">Architecture review — every week, not optional</div>
+        <div class="layer-desc">Evolution of the system is shared and discussed openly. If a system is changing and the team doesn't know how, that's the failure mode we're avoiding. Not a formal ceremony — a continuous, documented conversation.</div>
+      </div>
+      <div class="layer">
+        <div class="layer-name">Ideas come from engineers — not handed down from above</div>
+        <div class="layer-desc">Product teams here are composed of engineers delivering value. This is not a slogan — it's a structural commitment backed by how reviews and roadmaps actually work.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 06 // OBSERVABILITY ═══════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-narrow">
+    <div class="label">06 // Observability / Signals</div>
+    <div class="divider"></div>
+    <h2>We wire for signals.</h2>
+    <p class="body">Every feature, every module, every service emits something readable from <strong>day one</strong>. Logs that say what happened. Metrics that say how often and how fast. Traces that say where time was spent. Errors that surface with enough context to act on.</p>
+    <p class="body" style="margin-top:24px">We don't treat dashboards, logs, traces, and metrics as something to add later when there's time. <strong>The absence of a signal is a signal.</strong></p>
+
+    <div class="layers">
+      <div class="layer hot">
+        <div class="layer-name">Wire it before you ship it</div>
+        <div class="layer-desc">Ownership without signals is just opinion. Curiosity without telemetry is just guessing. Instrumentation is what gives your judgment something real to work with. This is what makes engineer-driven product decisions honest.</div>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card accent-card">
+        <h4>Decouple deploy from release</h4>
+        <p>Code goes to production behind feature flags. Exposure is a separate, controlled decision. Deploy and release are two different events — treat them that way.</p>
+      </div>
+      <div class="card">
+        <h4>Ship dark, then light up gradually</h4>
+        <p>Internal first. Slice of users next. Watch the signals. Roll forward or roll back based on what you see — not based on what you hope.</p>
+      </div>
+      <div class="card">
+        <h4>Run experiments where they matter</h4>
+        <p>When two reasonable approaches exist and the answer isn't obvious, set up the comparison. Let real usage decide. In architecture review, the first question is "what did the telemetry show?" — not "what do you think?"</p>
+      </div>
+      <div class="card">
+        <h4>Decisions are data-backed by default</h4>
+        <p>Opinion is cheap. Data is not. When you propose a change, the question is not whether it seems right — it's whether the signals confirm it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 07 // REVIEW ══════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-narrow">
+    <div class="label">07 // Review / Evidence</div>
+    <div class="divider"></div>
+    <h2>We review with Claude Code.</h2>
+    <p class="body">Agents catch what tired human eyes miss, and they do it consistently. The goal is evidence-backed review — not ceremony.</p>
+
+    <div class="card-grid">
+      <div class="card accent-card">
+        <h4>PR descriptions are full and evidence-backed</h4>
+        <p>What changed, why, what was tested, what was verified, screenshots or logs where they help. The description is the artifact future-you will read when something breaks.</p>
+      </div>
+      <div class="card">
+        <h4>All systems are accessible via CLI or MCP</h4>
+        <p>If your environment can only be inspected through a GUI, that's a gap to close. Hard debugging cases will always need a human — but the path to that human should be terminal-first.</p>
+      </div>
+      <div class="card">
+        <h4>If a human reviews it, they ran it</h4>
+        <p>No reproduction steps — the PR is not ready. "Looks good" is not a review. Ran it, watched it, verified the signals moved — that's a review.</p>
+      </div>
+      <div class="card">
+        <h4>Reviews happen with Claude Code</h4>
+        <p>Agents catch what tired human eyes miss, and they do it consistently. Use them. The review is the last gate before production — don't treat it as a formality.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 08 // OUTPUT ══════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-narrow">
+    <div class="label">08 // Output / Artifacts</div>
+    <div class="divider"></div>
+    <h2>Transparency and flexibility.</h2>
+    <p class="body">Every effort produces an artifact — and <strong>closes the loop</strong>. Daily focused progress and feedback, where the loop closes with evidence, not with a status update that says something was done.</p>
+
+    <table class="artifact-table">
+      <thead>
+        <tr>
+          <th>Effort</th>
+          <th>Artifact</th>
+          <th>Loop closes when&hellip;</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Research</td><td>Spike document</td><td>Decision is recorded and shared</td></tr>
+        <tr><td>Incident</td><td>RCA / postmortem</td><td>Action items have owners and dates</td></tr>
+        <tr><td>Bug ticket</td><td>Commit + PR</td><td>Telemetry confirms the fix in production</td></tr>
+        <tr><td>Feature</td><td>Commit + PR + flag rollout</td><td>Signals show usage and no regression</td></tr>
+        <tr><td>Training</td><td>Report or write-up</td><td>Insight is applied or shared with peers</td></tr>
+        <tr><td>Meeting</td><td>Useful contribution</td><td>Updates reach relevant parties (up, down, peer)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="layers">
+      <div class="layer hot">
+        <div class="layer-name">Surface your contribution — intentionally</div>
+        <div class="layer-desc">It is not by accident or chance that we are all here. If a day of effort produced no artifact, something went wrong — either the work wasn't worth it, or the output wasn't captured. If a PR merged but no signal moved, the work isn't done. Both are problems worth surfacing.</div>
+      </div>
+      <div class="layer">
+        <div class="layer-name">We all win if we all row the same cadence</div>
+        <div class="layer-desc">Toward the same end goal. The loop closes with evidence — not with a Friday dump of what was done.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:80px">
+      <div class="label" style="margin-bottom:24px">Core hours of overlap</div>
+      <div class="hours-grid">
+        <div class="hours-cell">
+          <div class="hours-zone">Pacific Time</div>
+          <div class="hours-time">9 AM → 1 PM</div>
+        </div>
+        <div class="hours-cell">
+          <div class="hours-zone">BRL / AT</div>
+          <div class="hours-time">13:00 → 17:00</div>
+        </div>
+      </div>
+      <p class="mono" style="margin-top:20px;font-size:12px;color:var(--dim);line-height:1.9">
+        Inside the window — <strong style="color:var(--fg)">be reachable</strong>.<br>
+        Outside it — contiguous work hours, your preferred breaks.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ OUTRO ════════════════════════════════════════════════════════════════ -->
+<section class="section" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:60vh">
+  <h2>Several points, one underlying claim.</h2>
+  <p class="mono" style="margin-top:30px;max-width:520px;text-align:center;line-height:2.2">
+    <strong style="color:var(--fg)">High autonomy</strong> — the deciding voice on what to build is usually yours.<br>
+    <em style="color:var(--fg)">High signal</em> — wire before you ship; the absence of signal is a signal.<br>
+    <strong style="color:var(--fg)">High leverage</strong> — build skills, steer agents, close loops with evidence.
+  </p>
+  <p class="mono" style="margin-top:32px;font-size:11px;letter-spacing:0.16em;color:var(--dimmer)">THAT'S THE JOB.</p>
+  <a href="https://linkedin.com/in/brasileiro" target="_blank" rel="noopener"
+     style="display:inline-block;margin-top:60px;font-family:var(--mono);font-size:12px;letter-spacing:0.12em;color:var(--dim);text-decoration:none;border-bottom:1px solid var(--dimmer);padding-bottom:2px;transition:color 0.2s,border-color 0.2s"
+     onmouseover="this.style.color='var(--fg)';this.style.borderColor='var(--fg)'"
+     onmouseout="this.style.color='var(--dim)';this.style.borderColor='var(--dimmer)'">Daniel Brasileiro</a>
+</section>
 
 <script>
-  const files = Array.from({ length: 20 }, (_, i) =>
-    `slides/slide-${String(i + 1).padStart(2, '0')}.html`
-  );
-
-  Promise.all(files.map(f => fetch(f).then(r => r.text())))
-    .then(parts => {
-      document.getElementById('deck').innerHTML = parts.join('');
-      const s = document.createElement('script');
-      s.src = 'script.js';
-      document.body.appendChild(s);
-    });
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
+document.querySelectorAll('.section').forEach(s => observer.observe(s));
 </script>
 </body>
 </html>
